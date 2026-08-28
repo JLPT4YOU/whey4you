@@ -6,7 +6,6 @@ import { SlidersHorizontal, X, ArrowUpDown } from 'lucide-react';
 import { ProductCard } from '@/components/product/product-card';
 import { CategorySidebar, FilterState } from '@/components/category/category-sidebar';
 import { CategorySlug, Product } from '@/types/product';
-import { MOCK_PRODUCTS } from '@/data/mock-products';
 
 interface CategoryViewProps {
   initialSlug: string;
@@ -32,7 +31,7 @@ export function CategoryView({ initialSlug, initialProducts }: CategoryViewProps
   const [mounted, setMounted] = useState(false);
 
   const [allProducts, setAllProducts] = useState<Product[]>(
-    initialProducts && initialProducts.length > 0 ? initialProducts : MOCK_PRODUCTS
+    initialProducts || []
   );
 
   useEffect(() => {

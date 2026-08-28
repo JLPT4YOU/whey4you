@@ -3,12 +3,18 @@
 import React from 'react';
 import { RotateCcw } from 'lucide-react';
 import { CategorySlug, Product } from '@/types/product';
-import { MOCK_CATEGORIES, MOCK_PRODUCTS } from '@/data/mock-products';
 
 export interface FilterState {
   category: CategorySlug;
   priceRange: 'all' | 'under-500' | '500-1000' | 'above-1000';
 }
+
+const CATEGORIES = [
+  { id: 'all', name: 'Tất Cả Sản Phẩm', slug: 'all' },
+  { id: 'whey-protein', name: 'Whey Protein', slug: 'whey-protein' },
+  { id: 'strength-endurance', name: 'Sức Mạnh & Sức Bền', slug: 'strength-endurance' },
+  { id: 'vitamins', name: 'Vitamins & Khoáng Chất', slug: 'vitamins' },
+];
 
 interface CategorySidebarProps {
   filters: FilterState;
@@ -21,12 +27,11 @@ export function CategorySidebar({
   filters,
   onFilterChange,
   onResetFilters,
-  products = MOCK_PRODUCTS,
+  products = [],
 }: CategorySidebarProps) {
   const getCategoryCount = (slug: string) => {
-    const list = products && products.length > 0 ? products : MOCK_PRODUCTS;
-    if (slug === 'all') return list.length;
-    return list.filter((p) => p.category === slug).length;
+    if (slug === 'all') return products.length;
+    return products.filter((p) => p.category === slug).length;
   };
 
   const isFiltered =
@@ -54,7 +59,7 @@ export function CategorySidebar({
         </div>
 
         <ul className="space-y-2">
-          {MOCK_CATEGORIES.map((cat) => {
+          {CATEGORIES.map((cat) => {
             const isActive = filters.category === cat.slug;
             const count = getCategoryCount(cat.slug);
 

@@ -20,7 +20,6 @@ import {
   BookOpen
 } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
-import { MOCK_PRODUCTS } from '@/data/mock-products';
 import { Logo } from '@/components/ui/logo';
 import { Product } from '@/types/product';
 
@@ -28,16 +27,14 @@ interface HeaderProps {
   initialProducts?: Product[];
 }
 
-export function Header({ initialProducts }: HeaderProps) {
+export function Header({ initialProducts = [] }: HeaderProps) {
   const pathname = usePathname();
   const { totalItems, setIsCartOpen, setQuickViewProduct } = useCart();
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
-  const [allProducts, setAllProducts] = useState<Product[]>(
-    initialProducts && initialProducts.length > 0 ? initialProducts : MOCK_PRODUCTS
-  );
+  const [allProducts, setAllProducts] = useState<Product[]>(initialProducts);
 
   useEffect(() => {
     setMounted(true);

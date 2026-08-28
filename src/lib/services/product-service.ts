@@ -1,7 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { createPublicClient } from '@/lib/supabase/public';
-import { MOCK_PRODUCTS, MOCK_CATEGORIES } from '@/data/mock-products';
-import { Product, CategorySlug } from '@/types/product';
+import { Product, CategorySlug, Category } from '@/types/product';
 import { cleanSlugParam } from '@/lib/utils/slug';
 
 export interface GetProductsOptions {
@@ -13,14 +12,14 @@ export interface GetProductsOptions {
 }
 
 /**
- * Lấy danh sách danh mục (Từ Supabase với Cache 60s & Graceful Fallback)
+ * Lấy danh sách danh mục (Từ Supabase với Cache 60s)
  */
-export async function getCategories() {
+export async function getCategories(): Promise<Category[]> {
   return unstable_cache(
-    async () => {
+    async (): Promise<Category[]> => {
       try {
         const supabase = createPublicClient();
-        if (!supabase) return MOCK_CATEGORIES;
+        if (!supabase) return [];
 
         const { data, error } = await supabase
           .from('categories')
@@ -28,12 +27,12 @@ export async function getCategories() {
           .order('sort_order', { ascending: true });
 
         if (error || !data || data.length === 0) {
-          return MOCK_CATEGORIES;
+          return [];
         }
 
-        return data;
+        return data as Category[];
       } catch {
-        return MOCK_CATEGORIES;
+        return [];
       }
     },
     ['w4u-categories'],
@@ -42,7 +41,7 @@ export async function getCategories() {
 }
 
 /**
- * Lấy danh sách sản phẩm theo bộ lọc (Từ Supabase với Cache 60s & Graceful Fallback)
+ * Lấy danh sách sản phẩm theo bộ lọc (Từ Supabase với Cache 60s)
  */
 export async function getProducts(options: GetProductsOptions = {}): Promise<Product[]> {
   const cacheKey = `w4u-products-${JSON.stringify(options)}`;
@@ -51,7 +50,7 @@ export async function getProducts(options: GetProductsOptions = {}): Promise<Pro
       try {
         const supabase = createPublicClient();
         if (!supabase) {
-          return filterMockProducts(options);
+          return [];
         }
 
         let query = supabase
@@ -91,12 +90,12 @@ export async function getProducts(options: GetProductsOptions = {}): Promise<Pro
         const { data, error } = await query;
 
         if (error || !data || data.length === 0) {
-          return filterMockProducts(options);
+          return [];
         }
 
         return data.map(mapDbProductToAppProduct);
       } catch {
-        return filterMockProducts(options);
+        return [];
       }
     },
     [cacheKey],
@@ -118,7 +117,7 @@ export async function getProductBySlug(rawSlug: string): Promise<Product | null>
       try {
         const supabase = createPublicClient();
         if (!supabase) {
-          return MOCK_PRODUCTS.find((p) => p.slug.toLowerCase() === slug.toLowerCase()) || null;
+          return null;
         }
 
         const { data, error } = await supabase
@@ -132,12 +131,12 @@ export async function getProductBySlug(rawSlug: string): Promise<Product | null>
           .single();
 
         if (error || !data) {
-          return MOCK_PRODUCTS.find((p) => p.slug.toLowerCase() === slug.toLowerCase()) || null;
+          return null;
         }
 
         return mapDbProductToAppProduct(data);
       } catch {
-        return MOCK_PRODUCTS.find((p) => p.slug.toLowerCase() === slug.toLowerCase()) || null;
+        return null;
       }
     },
     [cacheKey],
@@ -155,7 +154,7 @@ export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
       try {
         const supabase = createPublicClient();
         if (!supabase) {
-          return MOCK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
+          return [];
         }
 
         const { data, error } = await supabase
@@ -169,12 +168,12 @@ export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
           .limit(limit);
 
         if (error || !data || data.length === 0) {
-          return MOCK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
+          return [];
         }
 
         return data.map(mapDbProductToAppProduct);
       } catch {
-        return MOCK_PRODUCTS.filter((p) => p.isFeatured).slice(0, limit);
+        return [];
       }
     },
     [cacheKey],
@@ -265,35 +264,4 @@ function mapDbProductToAppProduct(row: any): Product {
     goal: row.goal,
     isFeatured: row.is_featured,
   };
-}
-
-function filterMockProducts(options: GetProductsOptions): Product[] {
-  let list = [...MOCK_PRODUCTS];
-
-  if (options.category && options.category !== 'all') {
-    list = list.filter((p) => p.category === options.category);
-  }
-
-  if (options.goal && options.goal !== 'all') {
-    list = list.filter((p) => p.goal === options.goal);
-  }
-
-  if (options.search) {
-    const q = options.search.toLowerCase();
-    list = list.filter((p) => p.name.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q));
-  }
-
-  if (options.sortBy === 'price-asc') {
-    list.sort((a, b) => a.price - b.price);
-  } else if (options.sortBy === 'price-desc') {
-    list.sort((a, b) => b.price - a.price);
-  } else if (options.sortBy === 'rating') {
-    list.sort((a, b) => b.rating - a.rating);
-  }
-
-  if (options.limit) {
-    list = list.slice(0, options.limit);
-  }
-
-  return list;
 }

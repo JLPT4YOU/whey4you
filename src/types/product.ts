@@ -1,5 +1,15 @@
 export type CategorySlug = 'whey-protein' | 'strength-endurance' | 'vitamins' | 'all';
 
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  icon?: string;
+  count?: number;
+  tag?: string;
+  sort_order?: number;
+}
+
 export interface NutritionalFact {
   label: string;
   value: string;
