@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #08183a;
+    --card: #ffffff;
+    --card-foreground: #08183a;
+    --brand-blue: #0055fe;
+    --brand-blue-hover: #0044d0;
+    --brand-navy: #08183a;
+    --brand-cyan: #00d2ff;
+    --muted: #f4f7fc;
+    --muted-foreground: #62728d;
+    --border: #e2e8f4;
+    --ring: #0055fe;
+    --radius: 1.25rem;
+  }
+
+  body {
+    background-color: #fafcff;
+    color: var(--foreground);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom CSS Classes & Utilities */
+.bg-w4u-blue-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(0, 85, 254, 0.08) 0%, transparent 70%);
+}
+
+.text-gradient-w4u {
+  background: linear-gradient(135deg, #08183a 0%, #0055fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-blue {
+  background: linear-gradient(135deg, #0055fe 0%, #00d2ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-w4u-primary {
+  background: linear-gradient(135deg, #0055fe 0%, #0043d8 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px 0 rgba(0, 85, 254, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-w4u-primary:hover {
+  background: linear-gradient(135deg, #0044d0 0%, #0033ab 100%);
+  box-shadow: 0 6px 20px 0 rgba(0, 85, 254, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-w4u-primary:active {
+  transform: scale(0.98);
+}
+
+/* Animation utilities */
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(0.5deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 85, 254, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 85, 254, 0); }
+}
+
+.animate-float-subtle {
+  animation: float-subtle 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
 }
