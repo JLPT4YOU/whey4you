@@ -1319,6 +1319,9 @@ export default function AdminProductsPage() {
                     <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#0055FE] text-[10px] font-black">
                       Ảnh đầu tiên là ảnh bìa
                     </span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+                      Không giới hạn số lượng
+                    </span>
                   </div>
                   
                   <div className="flex items-center gap-2">
