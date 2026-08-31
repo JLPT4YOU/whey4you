@@ -24,8 +24,18 @@ export async function PATCH(request: NextRequest, { params }: RouteProps) {
     if (body.usage_guide !== undefined) updateData.usage_guide = body.usage_guide;
     if (body.usageGuide !== undefined) updateData.usage_guide = body.usageGuide;
     if (body.quality_commitment !== undefined) updateData.quality_commitment = body.quality_commitment;
-    if (body.qualityCommitment !== undefined) updateData.quality_commitment = body.qualityCommitment;
-    if (body.goal !== undefined) updateData.goal = body.goal;
+    const VALID_GOALS = ['muscle-growth', 'health-vitality', 'recovery', 'fat-burn'];
+    const normalizeGoal = (g?: string): string => {
+      if (!g) return 'muscle-growth';
+      const clean = g.trim().toLowerCase();
+      if (VALID_GOALS.includes(clean)) return clean;
+      if (clean.includes('vitality') || clean.includes('health') || clean.includes('wellness')) return 'health-vitality';
+      if (clean.includes('fat') || clean.includes('burn') || clean.includes('mo')) return 'fat-burn';
+      if (clean.includes('recov') || clean.includes('phuc-hoi')) return 'recovery';
+      return 'muscle-growth';
+    };
+
+    if (body.goal !== undefined) updateData.goal = normalizeGoal(body.goal);
     if (body.category_id !== undefined) {
       updateData.category_id = body.category_id;
       // Lấy category_name từ DB thay vì hardcode

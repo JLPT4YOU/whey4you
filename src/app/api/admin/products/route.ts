@@ -37,6 +37,17 @@ export async function POST(request: NextRequest) {
       if (catData?.name) categoryName = catData.name;
     }
 
+    const VALID_GOALS = ['muscle-growth', 'health-vitality', 'recovery', 'fat-burn'];
+    const normalizeGoal = (g?: string): string => {
+      if (!g) return 'muscle-growth';
+      const clean = g.trim().toLowerCase();
+      if (VALID_GOALS.includes(clean)) return clean;
+      if (clean.includes('vitality') || clean.includes('health') || clean.includes('wellness')) return 'health-vitality';
+      if (clean.includes('fat') || clean.includes('burn') || clean.includes('mo')) return 'fat-burn';
+      if (clean.includes('recov') || clean.includes('phuc-hoi')) return 'recovery';
+      return 'muscle-growth';
+    };
+
     const insertPayload: Record<string, any> = {
       name: body.name,
       slug: cleanSlug,
@@ -54,7 +65,7 @@ export async function POST(request: NextRequest) {
       description: body.description || body.tagline || body.name,
       usage_guide: body.usage_guide || body.usageGuide || null,
       quality_commitment: body.quality_commitment || body.qualityCommitment || null,
-      goal: body.goal || 'muscle-growth',
+      goal: normalizeGoal(body.goal),
       is_featured: Boolean(body.is_featured),
     };
 

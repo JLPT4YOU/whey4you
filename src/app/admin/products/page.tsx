@@ -1259,10 +1259,10 @@ export default function AdminProductsPage() {
                       onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
                       className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl focus:border-[#0055FE] focus:outline-none"
                     >
-                      <option value="muscle-growth">Tăng Cơ Nạc Tối Đa</option>
-                      <option value="strength">Tăng Sức Mạnh & Sức Bền</option>
-                      <option value="recovery">Phục Hồi Cơ Bắp</option>
-                      <option value="wellness">Sức Khỏe Toàn Diện</option>
+                      <option value="muscle-growth">Tăng Cơ Nạc (Muscle Growth)</option>
+                      <option value="fat-burn">Giảm Mỡ & Cắt Nét (Fat Burn)</option>
+                      <option value="recovery">Phục Hồi Cơ Bắp (Recovery)</option>
+                      <option value="health-vitality">Sức Khỏe & Năng Lượng (Health & Vitality)</option>
                     </select>
                   </div>
                   <div>
